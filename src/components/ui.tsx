@@ -21,12 +21,14 @@ export function ConfirmDialog({
   title,
   message,
   confirmLabel,
+  cancelLabel = 'キャンセル',
   onConfirm,
   onCancel,
 }: {
   title: string
   message: string
   confirmLabel: string
+  cancelLabel?: string
   onConfirm: () => void
   onCancel: () => void
 }) {
@@ -46,7 +48,7 @@ export function ConfirmDialog({
             onClick={onCancel}
             className="border-line rounded-xl border py-3 text-sm font-medium"
           >
-            やめる
+            {cancelLabel}
           </button>
           <button
             type="button"

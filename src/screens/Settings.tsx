@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
+import { ShareCard } from '../components/ShareCard'
 import { Card, ConfirmDialog, ScreenTitle } from '../components/ui'
 import { type Backup, createBackup, parseBackup } from '../lib/backup'
 import { todayString } from '../lib/date'
-import { replaceAll, saveSettings } from '../lib/store'
+import { replaceAll, saveSettings, type ShareConfig } from '../lib/store'
 import type { Purchase, Settings } from '../lib/types'
 
 const PRICE_MIN = 1
@@ -14,9 +15,11 @@ const parseIntStrict = (text: string): number | null =>
 export function SettingsScreen({
   purchases,
   settings,
+  share,
 }: {
   purchases: Purchase[]
   settings: Settings
+  share: ShareConfig | null
 }) {
   const [price, setPrice] = useState(String(settings.pricePerPack))
   const [goal, setGoal] = useState(
@@ -147,7 +150,7 @@ export function SettingsScreen({
       <Card>
         <h2 className="text-sm font-medium">バックアップ</h2>
         <p className="text-sub mt-1 text-xs leading-relaxed">
-          記録はこのスマホの中だけに保存されています。機種変更の前や、ときどき書き出しておくと安心です。
+          記録はこのスマホの中に保存されています。機種変更の前や、ときどき書き出しておくと安心です。
         </p>
         <div className="mt-3 grid grid-cols-2 gap-3">
           <button
@@ -176,6 +179,8 @@ export function SettingsScreen({
           {message}
         </p>
       </Card>
+
+      <ShareCard share={share} />
 
       {pending && (
         <ConfirmDialog

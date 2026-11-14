@@ -6,7 +6,14 @@ import { formatYen } from '../lib/format'
 import { addPurchase, deletePurchase } from '../lib/store'
 import type { Purchase } from '../lib/types'
 
-export function History({ purchases }: { purchases: Purchase[] }) {
+export function History({
+  purchases,
+  readOnly = false,
+}: {
+  purchases: Purchase[]
+  /** 家族の閲覧画面では、追加と削除を出さない */
+  readOnly?: boolean
+}) {
   const today = todayString()
   const groups = groupByDay(purchases)
   const [open, setOpen] = useState<string | null>(null)
@@ -26,6 +33,7 @@ export function History({ purchases }: { purchases: Purchase[] }) {
     <div>
       <ScreenTitle>履歴</ScreenTitle>
 
+      {!readOnly && (
       <section className="bg-card border-line mb-5 rounded-2xl border p-4">
         <label htmlFor="add-date" className="text-sub text-xs font-medium">
           日付を指定して追加
@@ -59,6 +67,7 @@ export function History({ purchases }: { purchases: Purchase[] }) {
               : '価格は現在の設定値で記録します。'}
         </p>
       </section>
+      )}
 
       {groups.length === 0 ? (
         <p className="text-sub py-10 text-center text-sm">まだ記録がありません</p>
@@ -86,18 +95,23 @@ export function History({ purchases }: { purchases: Purchase[] }) {
                 {isOpen && (
                   <ul className="bg-paper divide-line border-line divide-y border-t">
                     {g.items.map((p, i) => (
-                      <li key={p.id} className="flex items-center justify-between py-2 pr-3 pl-6">
+                      <li
+                        key={p.id}
+                        className="flex min-h-11 items-center justify-between py-2 pr-3 pl-6"
+                      >
                         <span className="tabular text-sm">
                           {i + 1}箱目
                           <span className="text-sub ml-3">{formatYen(p.price)}</span>
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => deletePurchase(p.id)}
-                          className="text-sub rounded-lg px-3 py-2 text-sm underline underline-offset-2"
-                        >
-                          削除
-                        </button>
+                        {!readOnly && (
+                          <button
+                            type="button"
+                            onClick={() => deletePurchase(p.id)}
+                            className="text-sub rounded-lg px-3 py-2 text-sm underline underline-offset-2"
+                          >
+                            削除
+                          </button>
+                        )}
                       </li>
                     ))}
                   </ul>

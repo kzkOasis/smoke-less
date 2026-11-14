@@ -60,13 +60,25 @@ const TABS: { id: TabId; label: string; icon: ReactNode }[] = [
   },
 ]
 
-export function TabBar({ current, onChange }: { current: TabId; onChange: (t: TabId) => void }) {
+export function TabBar({
+  current,
+  onChange,
+  only,
+  labels,
+}: {
+  current: TabId
+  onChange: (t: TabId) => void
+  /** 表示するタブを絞る（家族の閲覧画面用） */
+  only?: TabId[]
+  labels?: Partial<Record<TabId, string>>
+}) {
+  const tabs = only ? TABS.filter((t) => only.includes(t.id)) : TABS
   return (
     <nav
       aria-label="画面の切り替え"
-      className="border-line bg-card grid grid-cols-4 border-t pb-[env(safe-area-inset-bottom)]"
+      className="border-line bg-card grid auto-cols-fr grid-flow-col border-t pb-[env(safe-area-inset-bottom)]"
     >
-      {TABS.map((t) => {
+      {tabs.map((t) => {
         const active = t.id === current
         return (
           <button
@@ -79,7 +91,7 @@ export function TabBar({ current, onChange }: { current: TabId; onChange: (t: Ta
             }`}
           >
             {t.icon}
-            {t.label}
+            {labels?.[t.id] ?? t.label}
           </button>
         )
       })}
